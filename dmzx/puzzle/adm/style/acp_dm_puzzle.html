@@ -1,0 +1,117 @@
+{% INCLUDE 'overall_header.html' %}
+
+<a name="maincontent"></a>
+
+{% if S_EDIT_PUZZLE %}
+
+	<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};"><b>&laquo; {{ lang('BACK') }}</b></a>
+
+	<h1>{{ lang('PUZZLE_EDIT_PUZZLE') }}</h1>
+
+	<p>{{ lang('PUZZLE_EDIT_EXPLAIN') }}</p>
+
+	<form id="acp_puzzle" method="post" action="{{ U_ACTION }}">
+
+	<fieldset>
+		<legend>{{ lang('PUZZLE_TITLE') }}</legend>
+		<dl>
+			<dt><label>{{ lang('PUZZLE_EDIT_NAME') }}{{ lang('COLON') }}</label><br>{{ lang('PUZZLE_EDIT_NAME_EXP') }}</dt>
+			<dd><input name="name" type="text" id="name" size="30" maxlength="255" value="{{ NAME }}" /></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('PUZZLE_EDIT_DESCRIPTION') }}{{ lang('COLON') }}</label><br>{{ lang('PUZZLE_EDIT_DESCRIPTION_EXP') }}</dt>
+			<dd><textarea id="description" name="description" rows="5" cols="40" maxlength="255">{{ DESCRIPTION }}</textarea></dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('PUZZLE_EDIT_IMAGE_NAME') }}{{ lang('COLON') }}</label><br>{{ lang('PUZZLE_EDIT_IMAGE_NAME_EXP') }}</dt>
+			<dd><input name="image_name" type="text" id="image_name" size="30" maxlength="255" value="{{ IMAGE_NAME }}" /></dd>
+		</dl>
+		{{ S_HIDDEN_FIELDS }}
+
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="save" value="{{ lang('SUBMIT') }}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
+		{{ S_FORM_TOKEN }}
+	</p>
+	</fieldset>
+	</form>
+
+{% else %}
+
+	<h1>{{ lang('PUZZLE_TITLE') }}</h1>
+
+	<p>{{ lang('PUZZLE_TITLE_EXPLAIN') }}</p>
+
+	<form id="acp_puzzle" method="post" action="{{ U_ACTION }}">
+
+	<fieldset class="tabulated">
+	<legend>{{ lang('PUZZLE_TITLE') }}</legend>
+	<p class="quick">
+		{{ S_HIDDEN_FIELDS }}
+		<input class="button2" name="add" type="submit" value="{{ lang('PUZZLE_NEW_PUZZLE') }}" />
+	</p>
+
+<div class="action-bar top">
+	{% if loops.pagination|length or TOTAL_PUZZLES %}
+	<div class="pagination">
+		{{ TOTAL_PUZZLES }}
+		{% if loops.pagination|length %}
+			{% INCLUDE 'pagination.html' %}
+		{% else %}
+			&bull; {{ PAGE_NUMBER }}
+		{% endif %}
+	</div>
+	{% endif %}
+</div>
+
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th>{{ lang('PUZZLE_NAME') }}</th>
+		<th>{{ lang('PUZZLE_DESCRIPTION') }}</th>
+		<th>{{ lang('PUZZLE_IMAGE_NAME') }}</th>
+		<th>{{ lang('ACTION') }}</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for puzzle in loops.puzzle %}
+		{% if puzzle.S_ROW_COUNT is even %}<tr class="row1">{% else %}<tr class="row2">{% endif %}
+		<td style="text-align: left;">{{ puzzle.NAME }}</td>
+		<td style="text-align: left;">{{ puzzle.DESCRIPTION }}</td>
+		<td style="text-align: left;">{{ puzzle.IMAGE_NAME }}</td>
+		<td>&nbsp;<a href="{{ puzzle.U_EDIT }}">{{ ICON_EDIT }}</a>&nbsp;&nbsp;<a href="{{ puzzle.U_DELETE }}">{{ ICON_DELETE }}</a>&nbsp;</td>
+	</tr>
+	{% else %}
+	<tr class="row3">
+		<td colspan="4">{{ lang('PUZZLE_NO_ITEMS') }}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+
+<div class="action-bar bottom">
+	{% if loops.pagination|length or TOTAL_PUZZLES %}
+	<div class="pagination">
+		{{ TOTAL_PUZZLES }}
+		{% if loops.pagination|length %}
+			{% INCLUDE 'pagination.html' %}
+		{% else %}
+			&bull; {{ PAGE_NUMBER }}
+		{% endif %}
+	</div>
+	{% endif %}
+</div>
+
+	<form action="{{ S_PUZZLE_ACTION }}" method="post">
+	<fieldset class="display-options">
+		<span class="gensmall">{{ lang('SORT_BY') }}</span> {{ S_SELECT_SORT_KEY }} {{ S_SELECT_SORT_DIR }}&nbsp;
+		<input class="button2" type="submit" name="sort" value="{{ lang('GO') }}" />
+	</fieldset>
+	</form>
+
+	{{ S_FORM_TOKEN }}
+	</fieldset>
+	</form>
+{% endif %}
+
+{% INCLUDE 'overall_footer.html' %}
